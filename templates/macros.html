@@ -1,0 +1,26 @@
+{% macro input_field(name, label, type='text', value='', placeholder='', required=False) %}
+<div class="mb-3">
+    <label for="{{ name }}" class="form-label fw-bold">{{ label }}</label>
+    <input type="{{ type }}" class="form-control" id="{{ name }}" name="{{ name }}" value="{{ value }}"
+        placeholder="{{ placeholder }}" {% if required %}required{% endif %}>
+</div>
+{% endmacro %}
+
+{% macro premium_button(text, type='submit', class='') %}
+<button type="{{ type }}" class="btn btn-premium {{ class }}">
+    {{ text }}
+</button>
+{% endmacro %}
+
+{% macro card_start(title) %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ title }}</h5>
+    </div>
+    <div class="card-body">
+        {% endmacro %}
+
+        {% macro card_end() %}
+    </div>
+</div>
+{% endmacro %}

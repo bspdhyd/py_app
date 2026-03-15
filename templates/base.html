@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BSPD - Self Service{% endblock %}</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts: Cinzel for headers, Cormorant Garamond for body -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <style>
+        :root {
+            --primary-saffron: #D4621A;
+            --secondary-saffron: #A8440A;
+            --accent-gold: #B8860B;
+            --bg-cream: #FDF6EE;
+            --bg-white: #FFFDF8;
+            --text-main: #2C1200;
+            --navbar-height: 70px;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            /* Standardizing on Cream for a warmer, premium feel */
+            color: var(--text-main);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            /* Slightly smaller for better density */
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .font-cinzel {
+            font-family: 'Cinzel', serif !important;
+            color: var(--secondary-saffron);
+            letter-spacing: 0.05em;
+        }
+
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif !important;
+        }
+
+        .navbar {
+            background-color: var(--bg-white) !important;
+            /* Navbar white to contrast with cream body */
+            border-bottom: 3px solid var(--accent-gold);
+            min-height: 60px;
+            /* Reduced from 70px */
+            box-shadow: 0 4px 12px rgba(44, 18, 0, 0.08);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: var(--primary-saffron) !important;
+            text-shadow: 1px 1px 0px rgba(184, 134, 11, 0.2);
+        }
+
+        .nav-link {
+            color: var(--text-main) !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1.2px;
+            padding: 0.5rem 1rem !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary-saffron) !important;
+            transform: translateY(-1px);
+        }
+
+        .dropdown-menu {
+            background-color: var(--bg-white);
+            border: 1px solid var(--accent-gold);
+            border-radius: 0;
+            box-shadow: 0 8px 24px rgba(44, 18, 0, 0.12);
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-item {
+            color: var(--text-main);
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            /* Reduced padding */
+            font-size: 0.9rem;
+            /* Slightly smaller */
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--bg-cream);
+            color: var(--primary-saffron);
+            padding-left: 1.8rem;
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, var(--primary-saffron), var(--secondary-saffron));
+            color: white !important;
+            border: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 0.7rem 1.8rem;
+            border-radius: 0;
+            /* Boxy look for traditional feel */
+            box-shadow: 0 4px 0 var(--secondary-saffron);
+            transition: all 0.2s;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--secondary-saffron);
+            filter: brightness(1.1);
+        }
+
+        .card {
+            border: 1px solid rgba(184, 134, 11, 0.3);
+            border-radius: 0;
+            background-color: var(--bg-white);
+            box-shadow: 0 6px 15px rgba(44, 18, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .card-header {
+            background-color: var(--bg-cream);
+            border-bottom: 1px solid var(--accent-gold);
+            padding: 0.75rem 1.25rem;
+            /* Reduced padding */
+        }
+
+        /* Standardize Form Fields */
+        .form-control,
+        .form-select {
+            border: 1px solid rgba(184, 134, 11, 0.4);
+            border-radius: 0;
+            background-color: var(--bg-white);
+            padding: 0.5rem 0.75rem;
+            /* Reduced padding */
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            /* Slightly smaller */
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-saffron);
+            box-shadow: 0 0 0 3px rgba(212, 98, 26, 0.1);
+            background-color: white;
+        }
+
+        .form-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--secondary-saffron);
+            margin-bottom: 0.4rem;
+        }
+
+        /* Flash Messages */
+        .alert {
+            border-radius: 0;
+            border-left: 5px solid;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            border-left-color: #28a745;
+        }
+
+        .alert-danger {
+            border-left-color: #dc3545;
+        }
+
+        .alert-warning {
+            border-left-color: #ffc107;
+        }
+
+        .alert-info {
+            border-left-color: #17a2b8;
+        }
+
+            {
+            % block extra_css %
+        }
+
+            {
+            % endblock %
+        }
+    </style>
+</head>
+
+<body>
+
+    {% if request.endpoint != 'login' %}
+    {% include 'navbar.html' %}
+    {% endif %}
+
+    <main class="container py-4">
+        <!-- Flash Messages Display -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show"
+            role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Bootstrap 5 Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

@@ -5,9 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import db
-import cfs
-import subprocess
+import db, cfs, subprocess
 import logging
 
 # Configure logging
@@ -20,32 +18,27 @@ from crudfns.events import events_bp
 from updatefns.attendence import attendence_bp  
 from crudfns.registration import registration_bp  
 from crudfns.expenses import expenses_bp  
-from reportfns.mbrsearch import mbrsearch_bp
 from crudfns.contribution import contribution_bp
-from reportfns.van import van_bp
-from reportfns.member_reports import member_reports_bp
-from reportfns.event_reports import event_reports_bp
+from reportfns.member_reports import member_reports_bp, mbrsearch_bp, van_bp
+from reportfns.event_reports import event_reports_bp, monthly_report_bp
 from updatefns.nwmember import nwmember_bp
 from schools.podili_assignment import podili_assignment_bp
 from schools.podili_admission import podili_admission_bp
 from crudfns.password_modify import password_bp
-from reportfns.vamsatree import vamsatree_bp
 from updatefns.access import access_bp
 from updatefns.qrcode_gen import qrcode_bp
 from reportfns.master_data import master_data_bp
 from reportfns.multiple_data import multiple_data_bp
 from updatefns.update_member import update_member_bp
 from crudfns.requests import requests_bp
-from reportfns.monthly_report import monthly_report_bp
-from reportfns.issues import issues_bp
+from reportfns.issues import issues_bp, referer_issues_bp
 from reportfns.sibcollection_report import sibcollection_report_bp
-from reportfns.referer_issues import referer_issues_bp
 from research.images import images_bp
 from updatefns.dupidentifier import dupidentifier_bp
 from crudfns.payee import payee_bp
 from crudfns.payee_acc import payee_acc_bp
 from updatefns.conf_payment import conf_payment_bp
-from updatefns.vmt_details import vmt_bp
+from updatefns.vmt_details import vmt_bp, vamsatree_bp
 from NBV.nbv_subcollector import nbv_subcollector_bp
 from publicfns.bv_stats import bv_stats_bp
 

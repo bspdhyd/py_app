@@ -19,3 +19,6 @@ pandas/
 python_dateutil*/
 six.py
 six-*
+__pycache__/
+*.pyc
+db.py.bak

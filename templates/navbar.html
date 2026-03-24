@@ -17,19 +17,13 @@
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <span class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Admin Fns </span>
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin Fns </span>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="{{ url_for('events.events') }}">Events</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('access.access') }}">Access Search</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('sibcollection_report.upload_excel') }}">SIB
-                            Collection Rpt Upload</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('payee.view_payees') }}">Payee</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('payee_acc.payee_accounts') }}">Payee Accounts</a>
-                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('sibcollection_report.upload_excel') }}">SIB Collection Rpt Upload</a></li>
                     <li><a class="dropdown-item"
-                            href="{{ url_for('conf_payment.upload_payment_confirmation') }}">Payment Confirmation
-                            Upload</a></li>
+                            href="{{ url_for('conf_payment.upload_payment_confirmation') }}">Payment Confirmation Upload</a></li>
 
                 </ul>
             </li>
@@ -48,8 +42,9 @@
                             href="{{ url_for('contribution.manage_contributions') }}">Contribution</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('qrcode.generate_qr') }}">QR Generator</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('images.view_image') }}">View Image</a></li>
-
-
+                    <li><a class="dropdown-item" href="{{ url_for('payee.view_payees') }}">Payee</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('payee_acc.payee_accounts') }}">Payee Accounts</a></li>
+                    
                 </ul>
             </li>
         </ul>
@@ -77,29 +72,22 @@
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <span class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Reports & Views </span>
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Reports & Views </span>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="{{ url_for('mbrsearch.member_search') }}">Member Search</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('member_reports.member_reports_home') }}">Member
-                            Reports</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('event_reports.event_reports_home') }}">Event
-                            Reports</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('vamsatree.family_tree_page') }}">Vamsavruksham</a>
-                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('member_reports.member_reports_home') }}">Member Reports</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('event_reports.event_reports_home') }}">Event Reports</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('vamsatree.family_tree_page') }}">Vamsavruksham</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('master_data.master_data') }}">Master Data</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('multiple_data.multiple_data') }}">Multi Report</a>
-                    </li>
-                    <li><a class="dropdown-item" href="{{ url_for('monthly_report.monthly_report') }}">Monthly
-                            Report</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('multiple_data.multiple_data') }}">Multi Report</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('monthly_report.monthly_report') }}">Monthly Report</a></li>
                 </ul>
             </li>
         </ul>
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <span class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Podili Information </span>
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Podili Information </span>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="https://youtu.be/-SNk4lOPHVE?si=tw2KpW_1Drt8sCJE"
                             target="_blank">Podili School Video</a></li>
@@ -116,46 +104,27 @@
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <span class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    NBV </span>
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">NBV </span>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a class="dropdown-item" href="https://youtu.be/avcgKU63ZX4" target="_blank">NBV8
-                            Information</a></li>
-                    <li><a class="dropdown-item" href="https://youtu.be/iyUvlmqVEQM" target="_blank">What is
-                            Bikshavandanam</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('multiple_data.multiple_data') }}">MultiMember
-                            Verification</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('nbv_subcollector.dashboard') }}">NBV Sub-Collector
-                            Dashboard</a></li>
-                    {% if session['user']['MEMBER_TYPE'] == 'ADMIN' %}<li><a class="dropdown-item"
-                            href="{{ url_for('access.access') }}">MemberAccess</a>
-                    </li>{% endif %}
+                    <li><a class="dropdown-item" href="https://youtu.be/avcgKU63ZX4" target="_blank">NBV8 Information</a></li>
+                    <li><a class="dropdown-item" href="https://youtu.be/iyUvlmqVEQM" target="_blank">What is Bikshavandanam</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('multiple_data.multiple_data') }}">MultiMember Verification</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('nbv_subcollector.dashboard') }}">NBV Sub-Collector Dashboard</a></li>
                 </ul>
             </li>
         </ul>
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <span class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Data Issues </span>
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Data Issues </span>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="{{ url_for('issues.view_issues') }}">Mstr Data Issues</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('referer_issues.referer_issues') }}">Referer Data
-                            Quality Issues</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('dupidentifier.dupidentifier') }}">Duplicate Member
-                            Identifier</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('referer_issues.referer_issues') }}">Referer Data Quality Issues</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('dupidentifier.dupidentifier') }}">Duplicate Member Identifier</a></li>
                 </ul>
             </li>
         </ul>
     </div>
-
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav me-auto">
-            <li><a class="nav-link" href="{{ url_for('mbrsearch.member_search') }}">Member Search</a></li>
-
-        </ul>
-    </div>
-
 
     <div>
         <ul class="navbar-nav ms-auto">
@@ -163,10 +132,8 @@
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                     data-toggle="dropdown" aria-expanded="false">{{ session['user']['Alias'] }}</a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <li><a class="dropdown-item" href="{{ url_for('update_member.update_member') }}">Update Member</a>
-                    </li>
-                    <li><a class="dropdown-item" href="{{ url_for('password.password_modify') }}">Change Password</a>
-                    </li>
+                    <li><a class="dropdown-item" href="{{ url_for('update_member.update_member') }}">Update Member</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('password.password_modify') }}">Change Password</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
                 </ul>
             </li>

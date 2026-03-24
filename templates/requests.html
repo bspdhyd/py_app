@@ -6,13 +6,13 @@
 <div class="container mt-4">
     <div class="row">
         <!-- Left: Existing Requests Table -->
-        <div class="col-md-8">
+        <div class="col-md-9">
             <h4>Existing Requests</h4>
             <!-- Search Form -->
             <!-- Add to Search Form -->
             <form method="get" action="{{ url_for('requests.view_requests') }}" class="mb-3">
-                <div class="form-group row">
-                    <div class="form-group bg-light mr-2">
+                <div class="form-group row align-items-start">
+                    <div class="col-auto form-group bg-light mr-2">
                         <label><strong>Search by Category:</strong></label><br>
                         {% for cat in ['Defect', 'Audit Request', 'User Request'] %}
                             <div class="form-check form-check-inline">
@@ -21,7 +21,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <div class="form-group bg-light">
+                    <div class="col-auto form-group bg-light">
                         <label><strong>Search by Status:</strong></label><br>
                         {% for stat in ['Open', 'In Progress', 'Closed', 'Cancelled'] %}
                             <div class="form-check form-check-inline">
@@ -31,12 +31,14 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="form-group row">
-                    <div class="form-row mr-5">
+                <div class="form-group row align-items-center">
+                    <div class="col-auto ">
                             <input type="text" name="search_member_id" class="form-control" placeholder="Search by Member ID" value="{{ request.args.get('search_member_id', '') }}">
                     </div>
-                    <button type="submit" class="btn btn-primary mr-3">Search</button>
-                    <a href="{{ url_for('requests.view_requests') }}" class="btn btn-secondary">Reset</a>
+                    <div class="col-auto ">
+                        <button type="submit" class="btn btn-primary mr-3">Search</button>
+                        <a href="{{ url_for('requests.view_requests') }}" class="btn btn-secondary">Reset</a>
+                    </div>
                 </div>
             </form>
 
@@ -64,12 +66,11 @@
         </div>
 
         <!-- Right: Create and Update Forms -->
-        <div class="col-md-4">
+        <div class="col-md-3">
         <!--    <form method="POST" action="{{ url_for('requests.view_requests') }}" class="p-3 border rounded bg-light">  -->
             <form method="POST"  class="p-3 border rounded bg-light">
                 <h5>Create Request</h5>
                 <div class="form-group">
-                    <label>Category</label>
                     <select name="category" class="form-control" required>
                         <option value="">Select Category</option>
                         <option>Audit Request</option>

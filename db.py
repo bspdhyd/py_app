@@ -361,7 +361,8 @@ def get_gotras():
 def create_member(surname, name, gender, year_of_birth, gotram_id, email, phone_num, referrer, bloodgroup, notes, addloc, addline1, addline2, addcity, addstate, addpin, addcntry):
     memid = session['user']['MEMBER_ID']
     # Hash the initial password (defaulting to phone number)
-    hashed_password = generate_password_hash(phone_num)
+    hashed_password = generate_password_hash(phone_num, method='pbkdf2:sha256', salt_length=16)
+
     query = """ INSERT INTO BSPD_Member 
         ( Surname, Name, Gender, Year_Of_Birth, Gotram_ID, Email_ID, Phone_Num, Referrer_ID, Location, Address1, Address2, City, State, PIN_or_ZIP, Country, BloodGroup, Password, Created_By, Updated_By, Notes) 
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
@@ -461,7 +462,7 @@ def search_college_admissions(alias=None, year_of_birth=None, status=None):
     return results
     
 def update_user_password(member_id, new_password):
-    hashed_password = generate_password_hash(new_password)
+    hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256', salt_length=16)
     query = "UPDATE BSPD_Member SET Password = %s WHERE MEMBER_ID = %s"
     params = [hashed_password, member_id]
     run_crud_query(query, params)

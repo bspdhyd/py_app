@@ -22,3 +22,6 @@ six-*
 __pycache__/
 *.pyc
 db.py.bak
+__pycache__/
+*.pyc
+.env

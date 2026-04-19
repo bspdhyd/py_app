@@ -40,15 +40,14 @@ from crudfns.payee_acc import payee_acc_bp
 from updatefns.conf_payment import conf_payment_bp
 from updatefns.vmt_details import vmt_bp, vamsatree_bp
 from NBV.nbv_subcollector import nbv_subcollector_bp
+from crudfns.manual_contribution import manual_contribution_bp
 from publicfns.bv_stats import bv_stats_bp
 
-    
-blueprints = [cflskrtn_bp, events_bp, attendence_bp, registration_bp, expenses_bp, mbrsearch_bp, contribution_bp, van_bp, member_reports_bp, event_reports_bp, nwmember_bp, podili_assignment_bp, podili_admission_bp, password_bp, vamsatree_bp, access_bp, qrcode_bp, master_data_bp, multiple_data_bp, update_member_bp, requests_bp, monthly_report_bp, issues_bp, sibcollection_report_bp, referer_issues_bp, images_bp, dupidentifier_bp, payee_bp, payee_acc_bp, conf_payment_bp, vmt_bp, nbv_subcollector_bp, bv_stats_bp]
+
+blueprints = [cflskrtn_bp, events_bp, attendence_bp, registration_bp, expenses_bp, mbrsearch_bp, contribution_bp, van_bp, member_reports_bp, event_reports_bp, nwmember_bp, podili_assignment_bp, podili_admission_bp, password_bp, vamsatree_bp, access_bp, qrcode_bp, master_data_bp, multiple_data_bp, update_member_bp, requests_bp, monthly_report_bp, issues_bp, sibcollection_report_bp, referer_issues_bp, images_bp, dupidentifier_bp, payee_bp, payee_acc_bp, conf_payment_bp, vmt_bp, nbv_subcollector_bp, manual_contribution_bp, bv_stats_bp]
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY")
-if not app.secret_key:
-    raise RuntimeError("FLASK_SECRET_KEY must be set in the environment.")
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev_secret_key")
 
 for blueprint in blueprints:
     app.register_blueprint(blueprint)

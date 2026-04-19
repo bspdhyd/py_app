@@ -21,9 +21,10 @@
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <li><a class="dropdown-item" href="{{ url_for('events.events') }}">Events</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('access.access') }}">Access Search</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('sibcollection_report.upload_excel') }}">SIB Collection Rpt Upload</a></li>
                     <li><a class="dropdown-item"
                             href="{{ url_for('conf_payment.upload_payment_confirmation') }}">Payment Confirmation Upload</a></li>
+                    <li><a class="dropdown-item"
+                            href="{{ url_for('manual_contribution.manual_contribution') }}">Manual Contribution Entry</a></li>
 
                 </ul>
             </li>
@@ -78,7 +79,6 @@
                     <li><a class="dropdown-item" href="{{ url_for('member_reports.member_reports_home') }}">Member Reports</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('event_reports.event_reports_home') }}">Event Reports</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('vamsatree.family_tree_page') }}">Vamsavruksham</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('master_data.master_data') }}">Master Data</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('multiple_data.multiple_data') }}">Multi Report</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('monthly_report.monthly_report') }}">Monthly Report</a></li>
                 </ul>

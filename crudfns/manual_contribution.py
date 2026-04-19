@@ -4,24 +4,10 @@ from datetime import date
 
 manual_contribution_bp = Blueprint('manual_contribution', __name__, url_prefix='/manual_contribution')
 
-SCREEN_PASSWORD = 'kamakoti2026'
-
-
 @manual_contribution_bp.route('/', methods=['GET', 'POST'])
 def manual_contribution():
     if 'user' not in session:
         return redirect(url_for('login'))
-
-    # Screen-level password gate (persisted in session)
-    if not session.get('manual_contrib_auth'):
-        if request.method == 'POST' and request.form.get('action') == 'verify_password':
-            if request.form.get('screen_password') == SCREEN_PASSWORD:
-                session['manual_contrib_auth'] = True
-            else:
-                flash("Incorrect password.", "danger")
-                return render_template('manual_contribution.html', pw_required=True)
-        else:
-            return render_template('manual_contribution.html', pw_required=True)
 
     deshcodes = db.get_desh_codes()
     events = db.get_open_events_for_contribution()

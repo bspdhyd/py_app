@@ -878,3 +878,84 @@ def get_vmt_member_by_id(member_id):
     rows = run_fetchall_query(query, [member_id])
     return rows[0] if rows else None
     
+
+def run_crud_query_lastid(query, params):
+    conn = db_manager.get_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        last_id = cursor.lastrowid
+        conn.commit()
+        return last_id
+    finally:
+        db_manager.release_connection(conn)
+
+def get_desh_codes():
+    query = "SELECT DEShCode FROM BSPD_Dharmic_Entity ORDER BY DEShCode"
+    return run_fetchall_query(query, [])
+
+def get_open_events_for_contribution():
+    query = "SELECT EVENT_ID FROM BSPD_Event WHERE Event_status = 0 ORDER BY EVENT_ID DESC"
+    return run_fetchall_query(query, [])
+
+def search_members_for_contribution(term):
+    value = f"%{term}%"
+    query = """SELECT Alias, Phone_Num, Email_ID, MEMBER_ID
+               FROM BSPD_Member WHERE Status = 'Active'
+               AND (Alias LIKE %s OR Phone_Num LIKE %s OR Email_ID LIKE %s)
+               ORDER BY Alias LIMIT 20"""
+    return run_fetchall_query(query, [value, value, value])
+
+def create_manual_contribution(deshcode, event_id, member_id, amount, contribution_type,
+                                contribution_date, reference_details, receipt_pdf_url, approved):
+    created_by = session['user']['MEMBER_ID']
+    query = """INSERT INTO BSPD_Member_Contribution
+               (DEShCode, EVENT_ID, Member_id, Amount, Contribution_Type, Contribution_Date,
+                Reference_Details, Receipt_PDF_URL, Approved, CreatedBy, UpdatedBy)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+    params = [deshcode, event_id, member_id, amount, contribution_type, contribution_date,
+              reference_details, receipt_pdf_url, approved, created_by, created_by]
+    return run_crud_query_lastid(query, params)
+
+def get_receipt_data(transaction_code):
+    query = """SELECT Transaction_Code, Amt_In_Words FROM BSPD_Receipt_View
+               WHERE Transaction_Code = %s"""
+    return run_fetchone_query(query, [transaction_code])
+
+def get_contributions_for_manual_update(deshcode=None, event_id=None, transaction_code=None,
+                                         date_from=None, date_to=None):
+    conditions = []
+    params = []
+    if deshcode:
+        conditions.append("mc.DEShCode = %s")
+        params.append(deshcode)
+    if event_id:
+        conditions.append("mc.EVENT_ID = %s")
+        params.append(event_id)
+    if transaction_code:
+        conditions.append("mc.Transaction_Code = %s")
+        params.append(transaction_code)
+    if date_from:
+        conditions.append("mc.Createdate >= %s")
+        params.append(date_from)
+    if date_to:
+        conditions.append("mc.Createdate <= %s")
+        params.append(date_to)
+    where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+    query = f"""SELECT mc.Transaction_Code, mc.DEShCode, mc.EVENT_ID, bm.Alias,
+                       mc.Amount, mc.Contribution_Type, mc.Contribution_Date,
+                       mc.Reference_Details, mc.Receipt_PDF_URL, mc.Approved, mc.Createdate
+                FROM BSPD_Member_Contribution mc
+                JOIN BSPD_Member bm ON mc.Member_id = bm.MEMBER_ID
+                {where} ORDER BY mc.Transaction_Code DESC LIMIT 100"""
+    return run_fetchall_query(query, params)
+
+def update_manual_contribution(transaction_code, amount, contribution_type, contribution_date,
+                                reference_details, receipt_pdf_url, approved):
+    updated_by = session['user']['MEMBER_ID']
+    query = """UPDATE BSPD_Member_Contribution
+               SET Amount=%s, Contribution_Type=%s, Contribution_Date=%s,
+                   Reference_Details=%s, Receipt_PDF_URL=%s, Approved=%s, UpdatedBy=%s
+               WHERE Transaction_Code=%s"""
+    run_crud_query(query, [amount, contribution_type, contribution_date,
+                           reference_details, receipt_pdf_url, approved, updated_by, transaction_code])

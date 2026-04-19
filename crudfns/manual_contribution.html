@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'bootstrap.html' %}
+{% include 'navbar.html' %}
+
+<div class="container mt-4">
+
+<!-- ── Main Screen ─────────────────────────────────────────── -->
+<h4 class="mb-3">Manual Contribution Entry</h4>
+
+<ul class="nav nav-tabs" id="mainTabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link {% if active_tab == 'insert' %}active{% endif %}"
+           id="insert-tab" data-toggle="tab" href="#insert" role="tab">
+            <strong>New Entry</strong>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if active_tab == 'update' %}active{% endif %}"
+           id="update-tab" data-toggle="tab" href="#update" role="tab">
+            <strong>Search &amp; Update</strong>
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content border border-top-0 p-3 bg-white" id="mainTabContent">
+
+    <!-- ══ INSERT TAB ══════════════════════════════════════════════ -->
+    <div class="tab-pane fade {% if active_tab == 'insert' %}show active{% endif %}" id="insert" role="tabpanel">
+        <div class="row">
+
+            <!-- Insert Form -->
+            <div class="col-md-6">
+                <h5 class="mb-3">New Contribution</h5>
+                <form method="POST" id="insertForm">
+                    <input type="hidden" name="action" value="create">
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Entity (DEShCode)</label>
+                        <div class="col-sm-8">
+                            <select name="deshcode" class="form-control form-control-sm" required>
+                                {% for d in deshcodes %}
+                                <option value="{{ d.DEShCode }}"
+                                    {% if d.DEShCode == 'BHBNR001' %}selected{% endif %}>
+                                    {{ d.DEShCode }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Event ID</label>
+                        <div class="col-sm-8">
+                            <select name="event_id" class="form-control form-control-sm" required>
+                                {% for e in events %}
+                                <option value="{{ e.EVENT_ID }}"
+                                    {% if loop.first %}selected{% endif %}>
+                                    {{ e.EVENT_ID }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Member</label>
+                        <div class="col-sm-8" id="member_search_wrapper" style="position:relative;">
+                            <input type="text" id="member_search_input" class="form-control form-control-sm"
+                                   placeholder="Type name, phone or email..." autocomplete="off">
+                            <input type="hidden" name="member_id" id="member_id" required>
+                            <div id="member_search_results"
+                                 class="list-group shadow"
+                                 style="display:none; position:absolute; z-index:1000; width:100%; max-height:200px; overflow-y:auto;">
+                            </div>
+                            <small class="text-muted" id="selected_member_display"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Amount (₹)</label>
+                        <div class="col-sm-8">
+                            <input type="number" name="amount" class="form-control form-control-sm"
+                                   step="0.01" min="0.01" max="99999.99"
+                                   placeholder="0.00" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Contribution Type</label>
+                        <div class="col-sm-8">
+                            <select name="contribution_type" class="form-control form-control-sm" required>
+                                <option value="CHEQUE" selected>CHEQUE</option>
+                                <option value="CASH">CASH</option>
+                                <option value="NEFT">NEFT</option>
+                                <option value="KIND">KIND</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Contribution Date</label>
+                        <div class="col-sm-8">
+                            <input type="date" name="contribution_date" class="form-control form-control-sm"
+                                   value="{{ today }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Reference Details</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="reference_details" class="form-control form-control-sm"
+                                   maxlength="200" placeholder="Cheque no. / UTR / remarks">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Receipt PDF URL</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="receipt_pdf_url" class="form-control form-control-sm"
+                                   maxlength="500" placeholder="Optional URL">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label col-form-label-sm">Approved</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="approved" class="form-control form-control-sm"
+                                   value="Y" maxlength="1">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-8 offset-sm-4">
+                            <button type="submit" class="btn btn-success btn-sm">Save Contribution</button>
+                            <button type="reset" class="btn btn-secondary btn-sm ml-2"
+                                    onclick="clearMemberSearch()">Clear</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Post-Save Result Panel -->
+            <div class="col-md-6">
+                {% if new_transaction_code %}
+                <div class="card border-success mt-2">
+                    <div class="card-header bg-success text-white">Saved — System-Generated Values</div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-sm-5 col-form-label col-form-label-sm">Transaction Code</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control form-control-sm"
+                                       value="{{ new_transaction_code }}" readonly
+                                       style="background:#e9ecef; color:#6c757d; font-weight:bold;">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-5 col-form-label col-form-label-sm">Amount In Words</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control form-control-sm"
+                                       value="{{ new_amt_in_words }}" readonly
+                                       style="background:#e9ecef; color:#6c757d;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card border-secondary mt-2">
+                    <div class="card-header text-muted">System-Generated Values</div>
+                    <div class="card-body text-muted small">
+                        <p>After saving, <strong>Transaction Code</strong> and
+                        <strong>Amount in Words</strong> will appear here.</p>
+                        <div class="form-group row">
+                            <label class="col-sm-5 col-form-label col-form-label-sm">Transaction Code</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control form-control-sm" disabled
+                                       placeholder="Auto-generated" style="background:#e9ecef; color:#aaa;">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-5 col-form-label col-form-label-sm">Amount In Words</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control form-control-sm" disabled
+                                       placeholder="Auto-generated" style="background:#e9ecef; color:#aaa;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div><!-- end insert tab -->
+
+
+    <!-- ══ UPDATE TAB ══════════════════════════════════════════════ -->
+    <div class="tab-pane fade {% if active_tab == 'update' %}show active{% endif %}" id="update" role="tabpanel">
+
+        <!-- Filter Form -->
+        <form method="POST" class="p-2 bg-light border rounded mb-3">
+            <input type="hidden" name="action" value="search_update">
+            <div class="form-row align-items-end">
+                <div class="col-md-2">
+                    <label class="small">Entity (DEShCode)</label>
+                    <select name="filter_deshcode" class="form-control form-control-sm">
+                        <option value="">-- All --</option>
+                        {% for d in deshcodes %}
+                        <option value="{{ d.DEShCode }}"
+                            {% if filter_vals.deshcode == d.DEShCode %}selected{% endif %}>
+                            {{ d.DEShCode }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="small">Event ID</label>
+                    <select name="filter_event_id" class="form-control form-control-sm">
+                        <option value="">-- All --</option>
+                        {% for e in events %}
+                        <option value="{{ e.EVENT_ID }}"
+                            {% if filter_vals.event_id == e.EVENT_ID %}selected{% endif %}>
+                            {{ e.EVENT_ID }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="small">Transaction Code</label>
+                    <input type="text" name="filter_transaction_code" class="form-control form-control-sm"
+                           value="{{ filter_vals.transaction_code }}" placeholder="Exact code">
+                </div>
+                <div class="col-md-2">
+                    <label class="small">Created From</label>
+                    <input type="date" name="filter_date_from" class="form-control form-control-sm"
+                           value="{{ filter_vals.date_from }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="small">Created To</label>
+                    <input type="date" name="filter_date_to" class="form-control form-control-sm"
+                           value="{{ filter_vals.date_to }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-sm btn-block">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Results Table -->
+        {% if contributions %}
+        <div class="table-responsive mb-3">
+            <table class="table table-bordered table-sm table-hover" style="font-size:0.82rem;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Txn Code</th>
+                        <th>DEShCode</th>
+                        <th>Event</th>
+                        <th>Mem ID</th>
+                        <th>Member</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Contrib Date</th>
+                        <th>Approved</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in contributions %}
+                    <tr>
+                        <td>{{ c.Transaction_Code }}</td>
+                        <td>{{ c.DEShCode }}</td>
+                        <td>{{ c.EVENT_ID }}</td>
+                        <td>{{ c.Member_id }}</td>
+                        <td>{{ c.Alias or '-' }}</td>
+                        <td class="text-right">{{ "%.2f"|format(c.Amount|float) }}</td>
+                        <td>{{ c.Contribution_Type }}</td>
+                        <td>{{ c.Contribution_Date }}</td>
+                        <td>{{ c.Approved }}</td>
+                        <td>
+                            <button type="button" class="btn btn-warning btn-sm"
+                                onclick="selectRow(
+                                    '{{ c.Transaction_Code }}',
+                                    '{{ c.Amount }}',
+                                    '{{ c.Contribution_Type }}',
+                                    '{{ c.Contribution_Date }}',
+                                    '{{ c.Reference_Details|default('', true)|replace("'", "\\'") }}',
+                                    '{{ c.Receipt_PDF_URL|default('', true)|replace("'", "\\'") }}',
+                                    '{{ c.Approved }}'
+                                )">Select</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% elif active_tab == 'update' %}
+        <p class="text-muted small">No results. Use the filter above and click <strong>Search</strong>.</p>
+        {% endif %}
+
+        <!-- Update Form (shown when a row is selected) -->
+        <div id="updateFormContainer" style="display:none;">
+            <hr>
+            <h6 class="text-primary">Update Selected Contribution</h6>
+            <form method="POST" class="p-3 border rounded bg-light">
+                <input type="hidden" name="action" value="update">
+                <!-- Carry filter values so post-update re-runs the same search -->
+                <input type="hidden" name="filter_deshcode" value="{{ filter_vals.deshcode }}">
+                <input type="hidden" name="filter_event_id" value="{{ filter_vals.event_id }}">
+                <input type="hidden" name="filter_transaction_code" value="{{ filter_vals.transaction_code }}">
+                <input type="hidden" name="filter_date_from" value="{{ filter_vals.date_from }}">
+                <input type="hidden" name="filter_date_to" value="{{ filter_vals.date_to }}">
+
+                <div class="form-row">
+                    <div class="col-md-3 form-group">
+                        <label class="small">Transaction Code (key)</label>
+                        <input type="text" id="upd_tc_display" class="form-control form-control-sm"
+                               readonly style="background:#e9ecef; color:#6c757d; font-weight:bold;">
+                        <input type="hidden" name="upd_transaction_code" id="upd_transaction_code">
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label class="small">Amount (₹)</label>
+                        <input type="number" name="upd_amount" id="upd_amount"
+                               class="form-control form-control-sm"
+                               step="0.01" min="0.01" max="99999.99" required>
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label class="small">Contribution Type</label>
+                        <select name="upd_contribution_type" id="upd_contribution_type"
+                                class="form-control form-control-sm" required>
+                            <option value="CHEQUE">CHEQUE</option>
+                            <option value="CASH">CASH</option>
+                            <option value="NEFT">NEFT</option>
+                            <option value="KIND">KIND</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <label class="small">Contribution Date</label>
+                        <input type="date" name="upd_contribution_date" id="upd_contribution_date"
+                               class="form-control form-control-sm" required>
+                    </div>
+                    <div class="col-md-1 form-group">
+                        <label class="small">Approved</label>
+                        <input type="text" name="upd_approved" id="upd_approved"
+                               class="form-control form-control-sm" maxlength="1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-5 form-group">
+                        <label class="small">Reference Details</label>
+                        <input type="text" name="upd_reference_details" id="upd_reference_details"
+                               class="form-control form-control-sm" maxlength="200">
+                    </div>
+                    <div class="col-md-5 form-group">
+                        <label class="small">Receipt PDF URL</label>
+                        <input type="text" name="upd_receipt_pdf_url" id="upd_receipt_pdf_url"
+                               class="form-control form-control-sm" maxlength="500">
+                    </div>
+                    <div class="col-md-2 form-group d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary btn-sm mr-2">Update</button>
+                        <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="cancelUpdate()">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div><!-- end update tab -->
+
+</div><!-- tab-content -->
+</div><!-- container -->
+
+<script>
+// ── Member typeahead ────────────────────────────────────────────────
+const memberSearchUrl = "{{ url_for('manual_contribution.member_search') }}";
+let searchTimer;
+
+document.getElementById('member_search_input') && document.getElementById('member_search_input').addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    const term = this.value.trim();
+    if (term.length < 2) {
+        document.getElementById('member_search_results').style.display = 'none';
+        return;
+    }
+    searchTimer = setTimeout(function () {
+        fetch(memberSearchUrl + '?q=' + encodeURIComponent(term))
+            .then(r => r.json())
+            .then(data => {
+                const box = document.getElementById('member_search_results');
+                if (data.length === 0) {
+                    box.innerHTML = '<a class="list-group-item list-group-item-action disabled small">No members found</a>';
+                } else {
+                    box.innerHTML = data.map(m =>
+                        `<a href="#" class="list-group-item list-group-item-action small"
+                            onclick="chooseMember(${m.MEMBER_ID}, '${(m.Alias||'').replace(/'/g,"\\'")}', '${(m.Phone_Num||'').replace(/'/g,"\\'")}'); return false;">
+                            ${m.Alias} &nbsp;|&nbsp; ${m.Phone_Num} &nbsp;|&nbsp; ${m.Email_ID} &nbsp;(ID: ${m.MEMBER_ID})
+                        </a>`
+                    ).join('');
+                }
+                box.style.display = 'block';
+            });
+    }, 300);
+});
+
+function chooseMember(id, alias, phone) {
+    document.getElementById('member_id').value = id;
+    document.getElementById('member_search_input').value = alias + ' | ' + phone + ' (ID: ' + id + ')';
+    document.getElementById('selected_member_display').textContent = 'Selected Member ID: ' + id;
+    document.getElementById('member_search_results').style.display = 'none';
+}
+
+function clearMemberSearch() {
+    const inp = document.getElementById('member_search_input');
+    if (inp) inp.value = '';
+    const hid = document.getElementById('member_id');
+    if (hid) hid.value = '';
+    const disp = document.getElementById('selected_member_display');
+    if (disp) disp.textContent = '';
+    const box = document.getElementById('member_search_results');
+    if (box) box.style.display = 'none';
+}
+
+document.addEventListener('click', function (e) {
+    if (!e.target.closest('#member_search_wrapper')) {
+        const box = document.getElementById('member_search_results');
+        if (box) box.style.display = 'none';
+    }
+});
+
+// ── Update row selection ─────────────────────────────────────────────
+function selectRow(tc, amount, type, date, ref, url, approved) {
+    document.getElementById('upd_transaction_code').value = tc;
+    document.getElementById('upd_tc_display').value = tc;
+    document.getElementById('upd_amount').value = amount;
+    const sel = document.getElementById('upd_contribution_type');
+    for (let i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === type) { sel.selectedIndex = i; break; }
+    }
+    document.getElementById('upd_contribution_date').value = date;
+    document.getElementById('upd_reference_details').value = ref;
+    document.getElementById('upd_receipt_pdf_url').value = url;
+    document.getElementById('upd_approved').value = approved;
+    document.getElementById('updateFormContainer').style.display = 'block';
+    document.getElementById('updateFormContainer').scrollIntoView({behavior: 'smooth'});
+}
+
+function cancelUpdate() {
+    document.getElementById('updateFormContainer').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
